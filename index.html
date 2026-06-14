@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- 1. LOGIN / REGISTER PORTAL -->
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-card">
+            <!-- Left Branding Side -->
+            <div class="auth-brand">
+                <div class="brand-content">
+                    <i class="fa-solid fa-calendar-check brand-logo-icon"></i>
+                    <h1>Event Management System</h1>
+                    <p class="brand-sub">6th Semester Engineering Mini Project</p>
+                    <div class="brand-badge">In-Memory Database Twin</div>
+                </div>
+                <div class="brand-footer">
+                    Version 1.0.0 | Pure HTML, CSS & JS
+                </div>
+            </div>
+            
+            <!-- Right Input Side -->
+            <div class="auth-inputs">
+                <!-- Login View -->
+                <div id="login-view" class="auth-view active">
+                    <h2>Welcome Back</h2>
+                    <p class="auth-subtitle">Please enter your credentials to log in.</p>
+                    
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-role"><i class="fa-solid fa-user-shield"></i> Select Role</label>
+                            <select id="login-role" class="form-control" required>
+                                <option value="User">Student User</option>
+                                <option value="Admin">Administrator</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-username"><i class="fa-solid fa-user"></i> Username</label>
+                            <input type="text" id="login-username" class="form-control" placeholder="e.g., admin or rahul" required autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password"><i class="fa-solid fa-lock"></i> Password</label>
+                            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                    </form>
+                    <div class="auth-switch">
+                        Don't have an account? <a href="#" id="go-to-register">Register here</a>
+                    </div>
+                </div>
+
+                <!-- Register View -->
+                <div id="register-view" class="auth-view">
+                    <h2>Create Account</h2>
+                    <p class="auth-subtitle">Sign up for a student portal account.</p>
+                    
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="reg-username"><i class="fa-solid fa-user-plus"></i> Username</label>
+                            <input type="text" id="reg-username" class="form-control" placeholder="Enter username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password"><i class="fa-solid fa-lock"></i> Password</label>
+                            <input type="password" id="reg-password" class="form-control" placeholder="Choose password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-confirm-password"><i class="fa-solid fa-circle-check"></i> Confirm Password</label>
+                            <input type="password" id="reg-confirm-password" class="form-control" placeholder="Verify password" required>
+                        </div>
+                        <button type="submit" class="btn btn-accent btn-block">Register Account</button>
+                    </form>
+                    <div class="auth-switch">
+                        Already have an account? <a href="#" id="go-to-login">Sign in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN DASHBOARD SHELL (Hidden initially) -->
+    <div id="dashboard-screen" class="dashboard-container hide">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-calendar-check logo-icon"></i>
+                <span id="sidebar-logo-text">EMS PANEL</span>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <!-- Shared -->
+                <a href="#" class="menu-item active" data-target="reports-panel" id="menu-reports">
+                    <i class="fa-solid fa-chart-pie"></i> Reports & Summary
+                </a>
+                
+                <!-- Admin Only -->
+                <a href="#" class="menu-item admin-only" data-target="events-panel" id="menu-events">
+                    <i class="fa-solid fa-calendar-days"></i> Manage Events
+                </a>
+                <a href="#" class="menu-item admin-only" data-target="participants-panel" id="menu-participants">
+                    <i class="fa-solid fa-user-group"></i> Manage Participants
+                </a>
+                <a href="#" class="menu-item admin-only" data-target="registrations-panel" id="menu-admin-regs">
+                    <i class="fa-solid fa-address-card"></i> Manage Registrations
+                </a>
+                <a href="#" class="menu-item admin-only" data-target="users-panel" id="menu-users">
+                    <i class="fa-solid fa-users-gear"></i> Manage Users
+                </a>
+
+                <!-- User Only -->
+                <a href="#" class="menu-item user-only" data-target="user-explore-panel" id="menu-user-explore">
+                    <i class="fa-solid fa-magnifying-glass"></i> Register for Events
+                </a>
+                <a href="#" class="menu-item user-only" data-target="user-regs-panel" id="menu-user-regs">
+                    <i class="fa-solid fa-receipt"></i> My Registrations
+                </a>
+                <a href="#" class="menu-item user-only" data-target="profile-panel" id="menu-profile">
+                    <i class="fa-solid fa-user-pen"></i> My Profile
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" id="btn-logout" class="menu-item logout-item">
+                    <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-workspace">
+            <!-- Header bar -->
+            <header class="top-bar">
+                <h1 id="active-panel-title">Dashboard</h1>
+                <div class="session-info">
+                    <span id="session-display">Logged in as: <strong id="username-display">admin</strong></span>
+                    <div class="role-badge" id="role-badge-display">Admin</div>
+                </div>
+            </header>
+
+            <!-- Dynamic Panels Container -->
+            <div class="panels-container">
+
+                <!-- PANEL 1: REPORTS / ANALYTICS -->
+                <section id="reports-panel" class="dashboard-panel active">
+                    <div class="panel-header-block">
+                        <h2>System Dashboard Overview</h2>
+                        <p>Real-time statistics of in-memory data arrays.</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card blue">
+                            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-info">
+                                <h3>Registered Users</h3>
+                                <div class="stat-value" id="stat-users-count">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card green">
+                            <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                            <div class="stat-info">
+                                <h3>Active Events</h3>
+                                <div class="stat-value" id="stat-events-count">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card purple">
+                            <div class="stat-icon"><i class="fa-solid fa-address-book"></i></div>
+                            <div class="stat-info">
+                                <h3>Total Participants</h3>
+                                <div class="stat-value" id="stat-parts-count">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card yellow">
+                            <div class="stat-icon"><i class="fa-solid fa-file-invoice"></i></div>
+                            <div class="stat-info">
+                                <h3>Total Registrations</h3>
+                                <div class="stat-value" id="stat-regs-count">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="intro-box">
+                        <h3>About this Twin Project</h3>
+                        <p>This browser frontend acts as the web-based twin for the Event Management System. In C# Windows Forms, the application stores data inside static generic Lists. Here, we mimic that design exactly using a central JavaScript object, providing an interactive viva demonstration tool.</p>
+                    </div>
+                </section>
+
+                <!-- PANEL 2: EVENT MANAGEMENT (ADMIN) -->
+                <section id="events-panel" class="dashboard-panel">
+                    <div class="crud-layout">
+                        <!-- Input Form -->
+                        <div class="crud-form-card">
+                            <h3>Event Information</h3>
+                            <form id="event-form">
+                                <input type="hidden" id="event-edit-mode" value="false">
+                                <div class="form-group">
+                                    <label for="event-id">Event ID</label>
+                                    <input type="number" id="event-id" class="form-control" required placeholder="e.g., 105">
+                                </div>
+                                <div class="form-group">
+                                    <label for="event-name">Event Name</label>
+                                    <input type="text" id="event-name" class="form-control" required placeholder="e.g., Coding Fest">
+                                </div>
+                                <div class="form-group">
+                                    <label for="event-date">Scheduled Date</label>
+                                    <input type="date" id="event-date" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="event-venue">Venue / Location</label>
+                                    <input type="text" id="event-venue" class="form-control" required placeholder="e.g., Seminar Hall A">
+                                </div>
+                                <div class="btn-row">
+                                    <button type="submit" id="btn-save-event" class="btn btn-primary">Add Event</button>
+                                    <button type="button" id="btn-clear-event" class="btn btn-light">Clear</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Data Table -->
+                        <div class="crud-table-card">
+                            <h3>Scheduled Events Catalog</h3>
+                            <div class="table-container">
+                                <table id="events-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Event Name</th>
+                                            <th>Date</th>
+                                            <th>Venue</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="events-table-body">
+                                        <!-- Dynamic JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANEL 3: PARTICIPANT MANAGEMENT (ADMIN) -->
+                <section id="participants-panel" class="dashboard-panel">
+                    <div class="crud-layout">
+                        <!-- Input Form -->
+                        <div class="crud-form-card">
+                            <h3>Participant Details</h3>
+                            <form id="part-form">
+                                <input type="hidden" id="part-edit-mode" value="false">
+                                <div class="form-group">
+                                    <label for="part-id">Participant ID</label>
+                                    <input type="number" id="part-id" class="form-control" required placeholder="e.g., 5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="part-name">Full Name</label>
+                                    <input type="text" id="part-name" class="form-control" required placeholder="e.g., Alice Green">
+                                </div>
+                                <div class="form-group">
+                                    <label for="part-phone">Phone Number</label>
+                                    <input type="tel" id="part-phone" class="form-control" required placeholder="e.g., 9988776655">
+                                </div>
+                                <div class="btn-row">
+                                    <button type="submit" id="btn-save-part" class="btn btn-primary">Add Participant</button>
+                                    <button type="button" id="btn-clear-part" class="btn btn-light">Clear</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Data Table -->
+                        <div class="crud-table-card">
+                            <h3>Active Participants Directory</h3>
+                            <div class="table-container">
+                                <table id="parts-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Phone Number</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="parts-table-body">
+                                        <!-- Dynamic JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANEL 4: REGISTRATION APPROVAL (ADMIN) -->
+                <section id="registrations-panel" class="dashboard-panel">
+                    <div class="data-full-card">
+                        <div class="card-header-actions">
+                            <h3>Incoming Student Event Registrations</h3>
+                        </div>
+                        <div class="table-container">
+                            <table id="admin-regs-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Student User</th>
+                                        <th>Event Title</th>
+                                        <th>Status</th>
+                                        <th>Approval Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-regs-table-body">
+                                    <!-- Dynamic JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANEL 5: USER MANAGEMENT (ADMIN) -->
+                <section id="users-panel" class="dashboard-panel">
+                    <div class="data-full-card">
+                        <h3>System User Accounts Directory</h3>
+                        <div class="table-container">
+                            <table id="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Password Reference</th>
+                                        <th>System Privilege</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <!-- Dynamic JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANEL 6: USER EVENT EXPLORE & REGISTER (USER) -->
+                <section id="user-explore-panel" class="dashboard-panel">
+                    <div class="search-bar-block">
+                        <div class="search-form-group">
+                            <input type="text" id="user-event-search" class="form-control" placeholder="Search events by name or location...">
+                            <button type="button" id="btn-user-search" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                            <button type="button" id="btn-user-reset" class="btn btn-light">Reset</button>
+                        </div>
+                    </div>
+                    <div class="data-full-card">
+                        <h3>Upcoming Events Catalog</h3>
+                        <div class="table-container">
+                            <table id="user-events-table">
+                                <thead>
+                                    <tr>
+                                        <th>Event Name</th>
+                                        <th>Scheduled Date</th>
+                                        <th>Location Venue</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-events-table-body">
+                                    <!-- Dynamic JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANEL 7: MY REGISTRATIONS (USER) -->
+                <section id="user-regs-panel" class="dashboard-panel">
+                    <div class="data-full-card">
+                        <h3>My Submitted Registration Forms</h3>
+                        <div class="table-container">
+                            <table id="user-regs-table">
+                                <thead>
+                                    <tr>
+                                        <th>Registration ID</th>
+                                        <th>Registered Event</th>
+                                        <th>Approval Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-regs-table-body">
+                                    <!-- Dynamic JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANEL 8: MY PROFILE & PASSWORD (USER) -->
+                <section id="profile-panel" class="dashboard-panel">
+                    <div class="profile-card">
+                        <h3>Account Settings</h3>
+                        <div class="profile-user-display">
+                            <div class="profile-avatar"><i class="fa-solid fa-circle-user"></i></div>
+                            <div class="profile-info">
+                                <h4 id="profile-username">rahul</h4>
+                                <span class="badge badge-accent">Student Portal Access</span>
+                            </div>
+                        </div>
+                        
+                        <form id="profile-password-form">
+                            <div class="form-group">
+                                <label for="profile-current-pass">Current Password</label>
+                                <input type="password" id="profile-current-pass" class="form-control" required placeholder="Enter current password">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-new-pass">New Password</label>
+                                <input type="password" id="profile-new-pass" class="form-control" required placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-confirm-pass">Confirm New Password</label>
+                                <input type="password" id="profile-confirm-pass" class="form-control" required placeholder="Verify new password">
+                            </div>
+                            <button type="submit" class="btn btn-accent btn-block">Update Security Password</button>
+                        </form>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script file -->
+    <script src="app.js"></script>
+</body>
+</html>
