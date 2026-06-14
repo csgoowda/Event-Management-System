@@ -12,8 +12,27 @@ const Database = {
     currentRole: null
 };
 
+function saveDatabase() {
+    localStorage.setItem("ems_db", JSON.stringify({
+        users: Database.users,
+        events: Database.events,
+        participants: Database.participants,
+        registrations: Database.registrations
+    }));
+}
+
 // 2. INITIALIZE PRE-POPULATED SAMPLE DATA (Mirroring Database.cs in C#)
 function initializeSampleData() {
+    const saved = localStorage.getItem("ems_db");
+    if (saved) {
+        const data = JSON.parse(saved);
+        Database.users = data.users || [];
+        Database.events = data.events || [];
+        Database.participants = data.participants || [];
+        Database.registrations = data.registrations || [];
+        return;
+    }
+
     Database.users = [
         { username: "admin", password: "admin123" },
         { username: "rahul", password: "rahul123" },
@@ -22,10 +41,10 @@ function initializeSampleData() {
     ];
 
     Database.events = [
-        { eventId: 101, eventName: "National Tech Symposium", eventDate: "2026-09-15", venue: "Main Seminar Hall" },
-        { eventId: 102, eventName: "CodeCraft Hackathon", eventDate: "2026-10-22", venue: "Computer Lab 3" },
-        { eventId: 103, eventName: "Web Development Workshop", eventDate: "2026-11-05", venue: "CSE Seminar Hall" },
-        { eventId: 104, eventName: "AI & Machine Learning Seminar", eventDate: "2026-12-12", venue: "Auditorium 2" }
+        { eventId: 101, eventName: "National Tech Symposium", eventDate: "2026-09-15", venue: "Main Seminar Hall", type: "Free" },
+        { eventId: 102, eventName: "CodeCraft Hackathon", eventDate: "2026-10-22", venue: "Computer Lab 3", type: "Paid" },
+        { eventId: 103, eventName: "Web Development Workshop", eventDate: "2026-11-05", venue: "CSE Seminar Hall", type: "Free" },
+        { eventId: 104, eventName: "AI & Machine Learning Seminar", eventDate: "2026-12-12", venue: "Auditorium 2", type: "Paid" }
     ];
 
     Database.participants = [
@@ -41,6 +60,7 @@ function initializeSampleData() {
         { registrationId: 3, username: "priya", eventName: "Web Development Workshop", status: "Approved" },
         { registrationId: 4, username: "amit", eventName: "AI & Machine Learning Seminar", status: "Rejected" }
     ];
+    saveDatabase();
 }
 
 // 3. GENERIC SEARCH FILTER (Mirroring Database.FindItems<T> in C#)
@@ -88,6 +108,7 @@ function switchPanel(panelId, title) {
     else if (panelId === "user-explore-panel") renderUserExploreTable();
     else if (panelId === "user-regs-panel") renderUserRegsTable();
     else if (panelId === "profile-panel") loadUserProfile();
+    // Special panels handled dynamically
 }
 
 // Setup Event Handlers for Sidebar Menu Click Actions
@@ -115,18 +136,19 @@ function renderReports() {
     document.getElementById("stat-regs-count").innerText = Database.registrations.length;
 }
 
-// Render Admin Events Table
 function renderEventsTable() {
     const tbody = document.getElementById("events-table-body");
     tbody.innerHTML = "";
     
     Database.events.forEach(ev => {
+        const typeClass = ev.type === "Paid" ? "badge-accent" : "badge-approved";
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${ev.eventId}</td>
             <td><strong>${ev.eventName}</strong></td>
             <td>${ev.eventDate}</td>
             <td>${ev.venue}</td>
+            <td><span class="badge ${typeClass}">${ev.type || 'Free'}</span></td>
             <td class="table-actions">
                 <button class="btn btn-primary btn-tbl" onclick="editEvent(${ev.eventId})"><i class="fa-solid fa-pen"></i> Edit</button>
                 <button class="btn btn-danger btn-tbl" onclick="deleteEvent(${ev.eventId})"><i class="fa-solid fa-trash"></i> Delete</button>
@@ -218,13 +240,15 @@ function renderUserExploreTable(query = "") {
     }
 
     listToRender.forEach(ev => {
+        const typeClass = ev.type === "Paid" ? "badge-accent" : "badge-approved";
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td><strong>${ev.eventName}</strong></td>
             <td>${ev.eventDate}</td>
             <td>${ev.venue}</td>
+            <td><span class="badge ${typeClass}">${ev.type || 'Free'}</span></td>
             <td>
-                <button class="btn btn-accent btn-tbl" onclick="userRegisterForEvent('${ev.eventName}')"><i class="fa-solid fa-file-signature"></i> Register</button>
+                <button class="btn btn-accent btn-tbl" onclick="openRegistrationForm('${ev.eventName}')"><i class="fa-solid fa-file-signature"></i> Register</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -273,6 +297,9 @@ window.editEvent = function(id) {
         document.getElementById("event-name").value = ev.eventName;
         document.getElementById("event-date").value = ev.eventDate;
         document.getElementById("event-venue").value = ev.venue;
+        document.getElementById("event-type").value = ev.type || "Free";
+        document.getElementById("event-amount").value = ev.amount || "";
+        document.getElementById("event-amount-group").style.display = ev.type === "Paid" ? "block" : "none";
         
         document.getElementById("event-edit-mode").value = "true";
         document.getElementById("btn-save-event").innerText = "Update Event";
@@ -289,6 +316,7 @@ window.deleteEvent = function(id) {
             
             // Delete event
             Database.events.splice(evIndex, 1);
+            saveDatabase();
             alert("Event deleted successfully!");
             renderEventsTable();
             renderReports();
@@ -316,6 +344,7 @@ window.deleteParticipant = function(id) {
         const p = Database.participants[pIndex];
         if (confirm(`Are you sure you want to delete participant '${p.name}'?`)) {
             Database.participants.splice(pIndex, 1);
+            saveDatabase();
             alert("Participant removed from directory.");
             renderParticipantsTable();
             renderReports();
@@ -328,6 +357,7 @@ window.updateRegStatus = function(id, status) {
     const reg = Database.registrations.find(r => r.registrationId === id);
     if (reg) {
         reg.status = status;
+        saveDatabase();
         alert(`Registration status updated to '${status}'.`);
         renderAdminRegsTable();
         renderReports();
@@ -339,6 +369,7 @@ window.deleteReg = function(id) {
     if (idx !== -1) {
         if (confirm(`Delete registration ID ${id}?`)) {
             Database.registrations.splice(idx, 1);
+            saveDatabase();
             alert("Registration record deleted.");
             renderAdminRegsTable();
             renderReports();
@@ -361,21 +392,56 @@ window.deleteUser = function(username) {
         // Delete user
         Database.users = Database.users.filter(u => u.username !== username);
         
+        saveDatabase();
         alert("User account and related event records deleted successfully.");
         renderUsersTable();
         renderReports();
     }
 };
 
-// User Registers for Event
-window.userRegisterForEvent = function(eventName) {
+// NEW FLOW: User Registers for Event
+window.openRegistrationForm = function(eventName) {
     // Check duplicate enrollment
     const alreadyEnrolled = Database.registrations.some(r => r.username === Database.currentUser && r.eventName === eventName);
     if (alreadyEnrolled) {
         alert(`You have already registered for '${eventName}'.`);
         return;
     }
+    
+    const ev = Database.events.find(e => e.eventName === eventName);
+    if (!ev) return;
+    
+    document.getElementById("reg-ev-name").innerText = ev.eventName;
+    document.getElementById("reg-ev-type").innerText = ev.type || "Free";
+    
+    if (ev.type === "Paid") {
+        document.getElementById("reg-ev-amount-display").style.display = "block";
+        document.getElementById("reg-ev-amount").innerText = ev.amount || "0";
+    } else {
+        document.getElementById("reg-ev-amount-display").style.display = "none";
+    }
+    
+    // Auto-fill existing details if available
+    const part = Database.participants.find(p => p.name.toLowerCase() === Database.currentUser.toLowerCase());
+    if (part) {
+        document.getElementById("stud-name").value = part.name !== "N/A" ? part.name : Database.currentUser;
+        document.getElementById("stud-phone").value = part.phoneNumber !== "N/A" ? part.phoneNumber : "";
+    }
+    
+    // Toggle button style based on Free/Paid
+    const btn = document.getElementById("btn-submit-reg");
+    if (ev.type === "Paid") {
+        btn.innerText = "Proceed to Payment";
+        btn.className = "btn btn-accent btn-block";
+    } else {
+        btn.innerText = "Register for Free";
+        btn.className = "btn btn-primary btn-block";
+    }
 
+    switchPanel("event-registration-form-panel", "Event Registration Details");
+};
+
+window.userRegisterForEvent = function(eventName) {
     const nextId = Database.registrations.length > 0 ? Database.registrations[Database.registrations.length - 1].registrationId + 1 : 1;
     
     const newReg = {
@@ -386,8 +452,9 @@ window.userRegisterForEvent = function(eventName) {
     };
 
     Database.registrations.push(newReg);
+    saveDatabase();
     alert(`Registration submitted for '${eventName}'! Awaiting Admin approval.`);
-    renderUserExploreTable();
+    switchPanel("user-explore-panel", "Register for Events");
 };
 
 // ==========================================================================
@@ -496,6 +563,8 @@ function setupFormListeners() {
                 name: user.charAt(0).toUpperCase() + user.slice(1),
                 phoneNumber: "N/A"
             });
+            
+            saveDatabase();
 
             alert("Registration completed successfully! You can now log in.");
             
@@ -529,6 +598,8 @@ function setupFormListeners() {
         const name = document.getElementById("event-name").value.trim();
         const date = document.getElementById("event-date").value;
         const venue = document.getElementById("event-venue").value.trim();
+        const type = document.getElementById("event-type").value;
+        const amount = document.getElementById("event-amount").value;
         const isEdit = document.getElementById("event-edit-mode").value === "true";
 
         try {
@@ -539,12 +610,15 @@ function setupFormListeners() {
                     ev.eventName = name;
                     ev.eventDate = date;
                     ev.venue = venue;
+                    ev.type = type;
+                    ev.amount = amount;
 
                     // Sync registration events
                     Database.registrations.forEach(r => {
                         if (r.eventName === oldName) r.eventName = name;
                     });
 
+                    saveDatabase();
                     alert("Event updated successfully!");
                 }
             } else {
@@ -553,7 +627,8 @@ function setupFormListeners() {
                 if (exists) {
                     throw new Error(`An event with ID ${id} already exists.`);
                 }
-                Database.events.push({ eventId: id, eventName: name, eventDate: date, venue: venue });
+                Database.events.push({ eventId: id, eventName: name, eventDate: date, venue: venue, type: type, amount: amount });
+                saveDatabase();
                 alert("Event scheduled successfully.");
             }
 
@@ -572,6 +647,7 @@ function setupFormListeners() {
         document.getElementById("event-form").reset();
         document.getElementById("event-id").disabled = false;
         document.getElementById("event-edit-mode").value = "false";
+        document.getElementById("event-amount-group").style.display = "none";
         document.getElementById("btn-save-event").innerText = "Add Event";
     }
 
@@ -589,6 +665,7 @@ function setupFormListeners() {
                 if (p) {
                     p.name = name;
                     p.phoneNumber = phone;
+                    saveDatabase();
                     alert("Participant updated successfully.");
                 }
             } else {
@@ -597,6 +674,7 @@ function setupFormListeners() {
                     throw new Error(`Participant with ID ${id} already exists.`);
                 }
                 Database.participants.push({ participantId: id, name: name, phoneNumber: phone });
+                saveDatabase();
                 alert("Participant registered successfully.");
             }
 
@@ -650,12 +728,65 @@ function setupFormListeners() {
 
             // Success
             userObj.password = newPass;
+            saveDatabase();
             alert("Security password updated successfully!");
             document.getElementById("profile-password-form").reset();
 
         } catch (error) {
             alert(error.message);
         }
+    });
+
+    // H. NEW REGISTRATION FORM LISTENER
+    document.getElementById("event-reg-detail-form")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const evName = document.getElementById("reg-ev-name").innerText;
+        const evType = document.getElementById("reg-ev-type").innerText;
+        
+        // Save participant details back
+        const pName = document.getElementById("stud-name").value;
+        const pPhone = document.getElementById("stud-phone").value;
+        // Optionally save email/college to participant profile here...
+
+        const part = Database.participants.find(p => p.name.toLowerCase() === Database.currentUser.toLowerCase());
+        if (part) {
+            part.name = pName;
+            part.phoneNumber = pPhone;
+            saveDatabase();
+        }
+
+        if (evType === "Paid") {
+            const ev = Database.events.find(e => e.eventName === evName);
+            document.getElementById("payment-amount-display").innerText = "Amount Due: ₹" + (ev.amount || "0");
+            switchPanel("payment-panel", "Complete Dummy Payment");
+        } else {
+            userRegisterForEvent(evName);
+        }
+    });
+
+    // I. DUMMY PAYMENT SUBMIT LISTENER
+    document.getElementById("btn-process-payment")?.addEventListener("click", () => {
+        const overlay = document.getElementById("payment-success-overlay");
+        overlay.style.display = "flex";
+        
+        setTimeout(() => {
+            overlay.style.display = "none";
+            const evName = document.getElementById("reg-ev-name").innerText;
+            userRegisterForEvent(evName);
+        }, 2000);
+    });
+
+    // J. PAYMENT TABS LOGIC
+    document.querySelectorAll(".pay-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            // Remove active from all tabs and contents
+            document.querySelectorAll(".pay-tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".pay-tab-content").forEach(c => c.style.display = "none");
+            
+            // Add active to clicked tab
+            tab.classList.add("active");
+            document.getElementById(tab.getAttribute("data-tab")).style.display = "block";
+        });
     });
 
     // G. LOG OUT

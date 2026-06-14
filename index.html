@@ -219,6 +219,17 @@
                                     <label for="event-venue">Venue / Location</label>
                                     <input type="text" id="event-venue" class="form-control" required placeholder="e.g., Seminar Hall A">
                                 </div>
+                                <div class="form-group">
+                                    <label for="event-type">Event Type</label>
+                                    <select id="event-type" class="form-control" required onchange="document.getElementById('event-amount-group').style.display = this.value === 'Paid' ? 'block' : 'none';">
+                                        <option value="Free">Free</option>
+                                        <option value="Paid">Paid</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="event-amount-group" style="display: none;">
+                                    <label for="event-amount">Ticket Amount (₹)</label>
+                                    <input type="number" id="event-amount" class="form-control" placeholder="e.g., 500">
+                                </div>
                                 <div class="btn-row">
                                     <button type="submit" id="btn-save-event" class="btn btn-primary">Add Event</button>
                                     <button type="button" id="btn-clear-event" class="btn btn-light">Clear</button>
@@ -236,6 +247,7 @@
                                             <th>Event Name</th>
                                             <th>Date</th>
                                             <th>Venue</th>
+                                            <th>Type</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -361,6 +373,7 @@
                                         <th>Event Name</th>
                                         <th>Scheduled Date</th>
                                         <th>Location Venue</th>
+                                        <th>Event Type</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -423,8 +436,192 @@
                     </div>
                 </section>
 
+            <!-- PANEL 9: EVENT REGISTRATION FORM (DYNAMIC) -->
+            <section id="event-registration-form-panel" class="dashboard-panel">
+                <div class="crud-form-card" style="margin: 0 auto; max-width: 600px;">
+                    <h3>Complete Registration</h3>
+                    <p>Event: <strong id="reg-ev-name" style="color:var(--primary-color)"></strong> (<span id="reg-ev-type"></span>)</p>
+                    <p id="reg-ev-amount-display" style="display:none; color: #28a745; font-weight: bold; font-size: 1.2rem; margin-top: 5px;">Amount: ₹<span id="reg-ev-amount">0</span></p>
+                    <form id="event-reg-detail-form" style="margin-top: 1.5rem;">
+                        <div class="form-group">
+                            <label for="stud-name">Full Name</label>
+                            <input type="text" id="stud-name" class="form-control" required placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="stud-email">Gmail / Email Address</label>
+                            <input type="email" id="stud-email" class="form-control" required placeholder="example@gmail.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="stud-phone">Phone Number</label>
+                            <input type="tel" id="stud-phone" class="form-control" required placeholder="10-digit number">
+                        </div>
+                        <div class="form-group">
+                            <label for="stud-college">College / Organization Name</label>
+                            <input type="text" id="stud-college" class="form-control" required placeholder="Enter your college or company name">
+                        </div>
+                        <button type="submit" id="btn-submit-reg" class="btn btn-primary btn-block">Register</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- PANEL 10: DUMMY PAYMENT GATEWAY (DYNAMIC) -->
+            <section id="payment-panel" class="dashboard-panel">
+                <div class="crud-form-card payment-container" style="margin: 0 auto; max-width: 700px; padding: 2rem;">
+                    <div class="payment-header" style="text-align: center; margin-bottom: 2rem;">
+                        <h2><i class="fa-solid fa-shield-halved" style="color:var(--accent-color)"></i> Secure Checkout</h2>
+                        <h3 id="payment-amount-display" style="color: var(--primary-color); font-size: 1.8rem; margin: 10px 0;">Amount Due: ₹0</h3>
+                        <p style="color: #666;">Choose a dummy payment method to complete registration.</p>
+                    </div>
+
+                    <!-- Payment Tabs Header -->
+                    <div class="payment-tabs" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 1rem;">
+                        <button type="button" class="btn btn-light pay-tab active" data-tab="upi-tab" style="flex:1"><i class="fa-solid fa-qrcode"></i> UPI Apps</button>
+                        <button type="button" class="btn btn-light pay-tab" data-tab="card-tab" style="flex:1"><i class="fa-solid fa-credit-card"></i> Cards</button>
+                        <button type="button" class="btn btn-light pay-tab" data-tab="netbank-tab" style="flex:1"><i class="fa-solid fa-building-columns"></i> Net Banking</button>
+                    </div>
+
+                    <!-- Payment Tab Contents -->
+                    <div id="upi-tab" class="pay-tab-content active" style="display: block;">
+                        <h4>Select UPI App</h4>
+                        <div class="pay-grid" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="upi_app" checked>
+                                <i class="fa-brands fa-google-pay fa-2x" style="color: #4285F4;"></i>
+                                <span>Google Pay (GPay)</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="upi_app">
+                                <i class="fa-solid fa-qrcode fa-2x" style="color: #5f259f;"></i>
+                                <span>PhonePe</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="upi_app">
+                                <i class="fa-solid fa-mobile-screen fa-2x" style="color: #00baf2;"></i>
+                                <span>Paytm</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="upi_app">
+                                <i class="fa-brands fa-amazon-pay fa-2x" style="color: #ff9900;"></i>
+                                <span>Amazon Pay</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="upi_app">
+                                <i class="fa-solid fa-building-columns fa-2x" style="color: #ea7d24;"></i>
+                                <span>BHIM UPI</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="upi_app">
+                                <i class="fa-brands fa-whatsapp fa-2x" style="color: #25D366;"></i>
+                                <span>WhatsApp Pay</span>
+                            </label>
+                        </div>
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>Or Enter UPI ID</label>
+                            <input type="text" class="form-control" placeholder="example@upi">
+                        </div>
+                    </div>
+
+                    <div id="card-tab" class="pay-tab-content" style="display: none;">
+                        <h4>Credit / Debit Card</h4>
+                        <div class="pay-grid" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="card_type" checked>
+                                <i class="fa-brands fa-cc-visa fa-2x" style="color: #1a1f71;"></i>
+                                <span>Visa</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="card_type">
+                                <i class="fa-brands fa-cc-mastercard fa-2x" style="color: #eb001b;"></i>
+                                <span>MasterCard</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="card_type">
+                                <i class="fa-regular fa-credit-card fa-2x" style="color: #f26622;"></i>
+                                <span>RuPay</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="card_type">
+                                <i class="fa-brands fa-cc-amex fa-2x" style="color: #2e77bc;"></i>
+                                <span>Amex</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="card_type">
+                                <i class="fa-brands fa-cc-discover fa-2x" style="color: #f9a021;"></i>
+                                <span>Discover</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="card_type">
+                                <i class="fa-regular fa-credit-card fa-2x" style="color: #333;"></i>
+                                <span>Maestro</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" class="form-control" placeholder="0000 0000 0000 0000">
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Expiry (MM/YY)</label>
+                                <input type="text" class="form-control" placeholder="MM/YY">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>CVV</label>
+                                <input type="password" class="form-control" placeholder="***">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="netbank-tab" class="pay-tab-content" style="display: none;">
+                        <h4>Select Bank</h4>
+                        <div class="pay-grid" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="bank" checked>
+                                <i class="fa-solid fa-building-columns fa-2x" style="color: #007bc0;"></i>
+                                <span>State Bank of India (SBI)</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="bank">
+                                <i class="fa-solid fa-building-columns fa-2x" style="color: #004b8f;"></i>
+                                <span>HDFC Bank</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="bank">
+                                <i class="fa-solid fa-building-columns fa-2x" style="color: #f15a22;"></i>
+                                <span>ICICI Bank</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="bank">
+                                <i class="fa-solid fa-building-columns fa-2x" style="color: #97144d;"></i>
+                                <span>Axis Bank</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="bank">
+                                <i class="fa-solid fa-building-columns fa-2x" style="color: #ed1c24;"></i>
+                                <span>Kotak Mahindra Bank</span>
+                            </label>
+                            <label class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="bank">
+                                <i class="fa-solid fa-building-columns fa-2x" style="color: #fbb900;"></i>
+                                <span>Punjab National Bank (PNB)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <button type="button" id="btn-process-payment" class="btn btn-accent btn-block" style="font-size: 1.1rem; padding: 1rem;">Pay Now & Complete Registration</button>
+                    </div>
+                </div>
+            </section>
+
             </div>
+            <!-- panels-container END -->
         </main>
+    </div>
+
+    <!-- Payment Success Animation Overlay -->
+    <div id="payment-success-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+        <i class="fa-solid fa-circle-check fa-bounce" style="color: #28a745; font-size: 6rem; margin-bottom: 20px;"></i>
+        <h2 style="color: white; font-family: 'Outfit', sans-serif;">Payment Successful!</h2>
     </div>
 
     <!-- Script file -->
