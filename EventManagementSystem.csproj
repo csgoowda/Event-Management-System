@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A8F0E9A8-F3C2-4B42-9923-D10F5EF6A4B9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>EventManagementSystem</RootNamespace>
+    <AssemblyName>EventManagementSystem</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Core & OOP Files -->
+    <Compile Include="IManage.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="Participant.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="Admin.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="Registration.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="FormStyle.cs" />
+    <!-- Forms code files -->
+    <Compile Include="LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserRegistrationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserRegistrationForm.Designer.cs">
+      <DependentUpon>UserRegistrationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AdminDashboardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdminDashboardForm.Designer.cs">
+      <DependentUpon>AdminDashboardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserDashboardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserDashboardForm.Designer.cs">
+      <DependentUpon>UserDashboardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EventManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventManagementForm.Designer.cs">
+      <DependentUpon>EventManagementForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParticipantManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParticipantManagementForm.Designer.cs">
+      <DependentUpon>ParticipantManagementForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RegistrationManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RegistrationManagementForm.Designer.cs">
+      <DependentUpon>RegistrationManagementForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserManagementForm.Designer.cs">
+      <DependentUpon>UserManagementForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserEventRegistrationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserEventRegistrationForm.Designer.cs">
+      <DependentUpon>UserEventRegistrationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserProfileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserProfileForm.Designer.cs">
+      <DependentUpon>UserProfileForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReportsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReportsForm.Designer.cs">
+      <DependentUpon>ReportsForm.cs</DependentUpon>
+    </Compile>
+    <!-- Main program and metadata -->
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

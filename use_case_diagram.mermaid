@@ -1,0 +1,54 @@
+graph TD
+    %% Define Actors
+    Admin((Administrator))
+    Student((Student User))
+
+    %% Admin Use Cases
+    subgraph Admin Actions
+        UC_AddEv(Add Event)
+        UC_UpdEv(Update Event)
+        UC_DelEv(Delete Event)
+        UC_ViewEv(View All Events)
+        UC_AddPart(Add Participant)
+        UC_UpdPart(Update Participant)
+        UC_DelPart(Delete Participant)
+        UC_ViewPart(View Participants)
+        UC_ManageRegs(Approve/Reject Registrations)
+        UC_ManageUsers(View/Delete Users)
+        UC_ViewReports(View Summary Statistics)
+    end
+
+    %% User Use Cases
+    subgraph User Actions
+        UC_Register(Register Account)
+        UC_Login(Login)
+        UC_BrowseEv(View/Search Events)
+        UC_RegEv(Register for Event)
+        UC_MyRegs(View My Registrations)
+        UC_Profile(View Profile & Change Password)
+    end
+
+    %% Hook up relations
+    Admin --> UC_AddEv
+    Admin --> UC_UpdEv
+    Admin --> UC_DelEv
+    Admin --> UC_ViewEv
+    Admin --> UC_AddPart
+    Admin --> UC_UpdPart
+    Admin --> UC_DelPart
+    Admin --> UC_ViewPart
+    Admin --> UC_ManageRegs
+    Admin --> UC_ManageUsers
+    Admin --> UC_ViewReports
+
+    Student --> UC_Register
+    Student --> UC_Login
+    Student --> UC_BrowseEv
+    Student --> UC_RegEv
+    Student --> UC_MyRegs
+    Student --> UC_Profile
+    
+    style Admin fill:#e74c3c,stroke:#c0392b,stroke-width:2px,color:#fff
+    style Student fill:#2ecc71,stroke:#27ae60,stroke-width:2px,color:#fff
+    style Admin Actions fill:#f8f9fa,stroke:#bdc3c7,stroke-width:1px
+    style User Actions fill:#f8f9fa,stroke:#bdc3c7,stroke-width:1px

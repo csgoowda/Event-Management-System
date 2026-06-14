@@ -1,0 +1,87 @@
+classDiagram
+    class IManage {
+        <<interface>>
+        +Add() void
+        +Delete() void
+        +Display() void
+    }
+
+    class Person {
+        +Name : string
+        +Person(name : string)
+        +DisplayInfo() string*
+    }
+
+    class Participant {
+        +ParticipantId : int
+        +PhoneNumber : string
+        +Participant(id : int, name : string, phone : string)
+        +DisplayInfo() string
+    }
+    Person <|-- Participant : Inheritance
+
+    class User {
+        +Username : string
+        +Password : string
+        +User(username : string, password : string)
+    }
+
+    class Admin {
+        +Admin(username : string, password : string)
+    }
+    User <|-- Admin : Inheritance
+
+    class Event {
+        +EventId : int
+        +EventName : string
+        +EventDate : DateTime
+        +Venue : string
+        +Event(id : int, name : string, date : DateTime, venue : string)
+    }
+
+    class Registration {
+        +RegistrationId : int
+        +Username : string
+        +EventName : string
+        +Status : string
+        +Registration(id : int, user : string, event : string, status : string)
+    }
+
+    class Database {
+        <<static>>
+        +Users : List~User~
+        +Events : List~Event~
+        +Participants : List~Participant~
+        +Registrations : List~Registration~
+        +CurrentUsername : string
+        +CurrentRole : string
+        +FindItems~T~(source: List~T~, match: Predicate~T~) List~T~
+        +InitializeSampleData() void
+    }
+
+    class EventManagementForm {
+        +Add() void
+        +Delete() void
+        +Display() void
+    }
+    IManage <|.. EventManagementForm : Realization
+
+    class ParticipantManagementForm {
+        +Add() void
+        +Delete() void
+        +Display() void
+    }
+    IManage <|.. ParticipantManagementForm : Realization
+
+    class RegistrationManagementForm {
+        +Display() void
+    }
+
+    class UserEventRegistrationForm {
+        +Display() void
+    }
+
+    EventManagementForm --> Database : Uses
+    ParticipantManagementForm --> Database : Uses
+    RegistrationManagementForm --> Database : Uses
+    UserEventRegistrationForm --> Database : Uses
