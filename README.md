@@ -2,6 +2,10 @@
 
 A premium, modern desktop application built using **C# Windows Forms** (.NET Framework) for a 6th-semester college engineering mini-project.
 
+## Web Demo (Interactive Twin)
+An interactive web-based twin of this project is hosted on GitHub Pages:
+👉 **[Live Web Demo](https://csgoowda.github.io/Event-Management-System/)**
+
 ## Features
 - **In-Memory database:** Zero database installation or configuration required. Uses strongly-typed C# static lists (`List<T>`).
 - **Sidebar-based Master Shell UI:** A modern Single-Window dashboard interface loading child forms dynamically.
